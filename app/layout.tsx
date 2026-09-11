@@ -1,30 +1,25 @@
-import { Geist, Geist_Mono, Inter } from "next/font/google"
-
+import type { Metadata } from "next"
+import { Inter } from "next/font/google"
 import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@/lib/utils";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'})
-
-const fontMono = Geist_Mono({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-mono",
+  variable: "--font-sans",
+  display: "swap",
 })
+
+export const metadata: Metadata = {
+  title: "Taply — Your business, one tap away.",
+  description:
+    "A digital business profile platform for local businesses. Customers tap an NFC card or scan a QR code to reach your services, reviews, and booking.",
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", inter.variable)}
-    >
-      <body>
-        <ThemeProvider>{children}</ThemeProvider>
-      </body>
+    <html lang="en" className={inter.variable}>
+      <body>{children}</body>
     </html>
   )
 }
