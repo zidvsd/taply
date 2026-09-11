@@ -2,10 +2,11 @@ import type { HTMLAttributes, ReactNode } from "react"
 
 const PHONE_WIDTH = 433
 const PHONE_HEIGHT = 882
-const SCREEN_X = 21.25
-const SCREEN_Y = 19.25
-const SCREEN_WIDTH = 389.5
-const SCREEN_HEIGHT = 843.5
+const SCREEN_X = 12
+const SCREEN_Y = 12
+const SCREEN_WIDTH = 409
+const SCREEN_HEIGHT = 858
+
 const SCREEN_RADIUS = 55.75
 
 const LEFT_PCT = (SCREEN_X / PHONE_WIDTH) * 100
