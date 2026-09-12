@@ -53,7 +53,7 @@ export default async function BusinessLayout({
           fontFamily: appearanceFontFamily(activeAppearance),
         }}
       >
-        <div className="mx-auto flex w-full max-w-md flex-col gap-6">
+        <div className="mx-auto flex w-full max-w-130 flex-col gap-6">
           {activeAppearance?.show_logo !== false && (
             <ProfileHeader business={business} hours={hours} />
           )}
