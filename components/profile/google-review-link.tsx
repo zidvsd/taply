@@ -1,7 +1,6 @@
 import { Star } from "lucide-react"
 import type { Business } from "@/types/database"
-import { getGoogleMapsUrl } from "@/lib/google/places"
-
+import { getGoogleMapsUrl } from "@/lib/utils"
 interface GoogleReviewLinkProps {
   business: Business
 }
