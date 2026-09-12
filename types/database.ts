@@ -15,6 +15,7 @@ export type Database = {
           first_name: string | null
           last_name: string | null
           avatar_url: string | null
+          role: "admin" | "customer"
           created_at: string
           updated_at: string
         }
@@ -23,6 +24,7 @@ export type Database = {
           first_name?: string | null
           last_name?: string | null
           avatar_url?: string | null
+          role?: "admin" | "customer"
           created_at?: string
           updated_at?: string
         }
@@ -31,6 +33,7 @@ export type Database = {
           first_name?: string | null
           last_name?: string | null
           avatar_url?: string | null
+          role?: "admin" | "customer"
           created_at?: string
           updated_at?: string
         }
