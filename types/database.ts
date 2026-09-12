@@ -57,6 +57,7 @@ export type Database = {
           country: string | null
           google_place_url: string | null
           google_review_url: string | null
+          google_place_id: string | null
           maps_url: string | null
           published: boolean
           created_at: string
@@ -184,6 +185,83 @@ export type Database = {
           price?: number | null
           currency?: string
           duration_minutes?: number | null
+          image_url?: string | null
+          display_order?: number
+          enabled?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+
+      business_menu_categories: {
+        Row: {
+          id: string
+          business_id: string
+          name: string
+          display_order: number
+          enabled: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          business_id: string
+          name: string
+          display_order?: number
+          enabled?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          business_id?: string
+          name?: string
+          display_order?: number
+          enabled?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+
+      business_menu_items: {
+        Row: {
+          id: string
+          business_id: string
+          category_id: string | null
+          name: string
+          description: string | null
+          price: number | null
+          currency: string
+          image_url: string | null
+          display_order: number
+          enabled: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          business_id: string
+          category_id?: string | null
+          name: string
+          description?: string | null
+          price?: number | null
+          currency?: string
+          image_url?: string | null
+          display_order?: number
+          enabled?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          business_id?: string
+          category_id?: string | null
+          name?: string
+          description?: string | null
+          price?: number | null
+          currency?: string
           image_url?: string | null
           display_order?: number
           enabled?: boolean
@@ -461,6 +539,12 @@ export type BusinessService =
 
 export type BusinessHour = Database["public"]["Tables"]["business_hours"]["Row"]
 
+export type BusinessMenuCategory =
+  Database["public"]["Tables"]["business_menu_categories"]["Row"]
+
+export type BusinessMenuItem =
+  Database["public"]["Tables"]["business_menu_items"]["Row"]
+
 export type BusinessAppearance =
   Database["public"]["Tables"]["business_appearance"]["Row"]
 
@@ -492,6 +576,12 @@ export type BusinessServiceInsert =
 
 export type BusinessHourInsert =
   Database["public"]["Tables"]["business_hours"]["Insert"]
+
+export type BusinessMenuCategoryInsert =
+  Database["public"]["Tables"]["business_menu_categories"]["Insert"]
+
+export type BusinessMenuItemInsert =
+  Database["public"]["Tables"]["business_menu_items"]["Insert"]
 
 export type BusinessAppearanceInsert =
   Database["public"]["Tables"]["business_appearance"]["Insert"]
@@ -525,6 +615,12 @@ export type BusinessServiceUpdate =
 
 export type BusinessHourUpdate =
   Database["public"]["Tables"]["business_hours"]["Update"]
+
+export type BusinessMenuCategoryUpdate =
+  Database["public"]["Tables"]["business_menu_categories"]["Update"]
+
+export type BusinessMenuItemUpdate =
+  Database["public"]["Tables"]["business_menu_items"]["Update"]
 
 export type BusinessAppearanceUpdate =
   Database["public"]["Tables"]["business_appearance"]["Update"]

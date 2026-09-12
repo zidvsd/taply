@@ -1,19 +1,12 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { getPublicBusinessProfile } from "@/actions/business-profile"
-import { ProfileHeader } from "@/components/profile/profile-header"
-import { PrimaryActions } from "@/components/profile/primary-actions"
 import { GoogleReviewLink } from "@/components/profile/google-review-link"
-import { ServicesList } from "@/components/profile/services-list"
+import { ServicesPopover } from "@/components/profile/services-popover"
+import { MenuPopover } from "@/components/profile/menu-popover"
 import { LinksList } from "@/components/profile/links-list"
 import { HoursList } from "@/components/profile/hours-list"
-import { ProfileFootnote } from "@/components/profile/profile-footnote"
-import { ProfileSetupPendingState } from "@/components/empty-states/profile-setup-pending"
-import {
-  appearanceFontFamily,
-  buildAppearanceStyle,
-  resolveAppearanceForRender,
-} from "@/lib/apperance"
+import { resolveAppearanceForRender } from "@/lib/apperance"
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -23,7 +16,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params
-  const profile = await getPublicBusinessProfile(slug)
+  const profile = await getPublicBusinessProfile(slug) // same cached call
 
   if (!profile) {
     return { title: "Profile not found | Taply" }
@@ -52,53 +45,32 @@ export default async function BusinessProfilePage({ params }: PageProps) {
     notFound()
   }
 
-  const { business, links, services, hours, appearance } = profile
-
-  // Single gating point for the future pricing tier lock — see
-  // lib/appearance.ts. For MVP this just returns `appearance` unchanged.
+  const {
+    business,
+    links,
+    services,
+    hours,
+    appearance,
+    menuCategories,
+    menuItems,
+  } = profile
   const activeAppearance = resolveAppearanceForRender(appearance)
 
-  const hasContent =
-    links.length > 0 ||
-    services.length > 0 ||
-    hours.length > 0 ||
-    Boolean(business.google_review_url)
-
   return (
-    <main
-      className="min-h-screen bg-background px-4 pt-8 pb-16"
-      style={{
-        ...buildAppearanceStyle(activeAppearance),
-        fontFamily: appearanceFontFamily(activeAppearance),
-      }}
-    >
-      <div className="mx-auto flex w-full max-w-md flex-col gap-8">
-        {activeAppearance?.show_logo !== false && (
-          <ProfileHeader business={business} hours={hours} />
-        )}
+    <div className="flex flex-col gap-3">
+      <GoogleReviewLink business={business} />
 
-        <PrimaryActions business={business} />
+      <MenuPopover categories={menuCategories} items={menuItems} />
 
-        <GoogleReviewLink business={business} />
+      {activeAppearance?.show_services !== false && (
+        <ServicesPopover services={services} />
+      )}
 
-        {hasContent ? (
-          <>
-            {activeAppearance?.show_services !== false && (
-              <ServicesList services={services} />
-            )}
-            {activeAppearance?.show_social_links !== false && (
-              <LinksList links={links} />
-            )}
-            {activeAppearance?.show_hours !== false && (
-              <HoursList hours={hours} />
-            )}
-          </>
-        ) : (
-          <ProfileSetupPendingState />
-        )}
+      {activeAppearance?.show_social_links !== false && (
+        <LinksList links={links} />
+      )}
 
-        <ProfileFootnote />
-      </div>
-    </main>
+      {activeAppearance?.show_hours !== false && <HoursList hours={hours} />}
+    </div>
   )
 }
