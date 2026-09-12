@@ -21,7 +21,6 @@ export default async function BusinessLayout({
 }: LayoutProps) {
   const { slug } = await params
   const profile = await getPublicBusinessProfile(slug) // deduped via cache()
-
   if (!profile) {
     notFound()
   }
@@ -32,15 +31,6 @@ export default async function BusinessLayout({
 
   return (
     <>
-      {/*
-        Radix Popover/Dialog/DropdownMenu content renders in a portal
-        appended to <body>, outside this subtree — so the inline
-        `style` on <main> below never reaches it. Setting the same
-        custom properties at :root makes them available document-wide,
-        so portaled content (menu/services popovers) matches this
-        business's theme instead of Taply's default. Safe to inline:
-        values come from business_appearance, not user free-text.
-      */}
       {rootStyleTag && (
         <style dangerouslySetInnerHTML={{ __html: rootStyleTag }} />
       )}
