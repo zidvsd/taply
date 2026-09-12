@@ -239,11 +239,9 @@ export type Database = {
           button_style: string
           font_pairing: string
           show_logo: boolean
-          show_cover: boolean
           show_services: boolean
-          show_links: boolean
           show_hours: boolean
-          show_booking: boolean
+          show_social_links: boolean
           created_at: string
           updated_at: string
         }
@@ -258,11 +256,9 @@ export type Database = {
           button_style?: string
           font_pairing?: string
           show_logo?: boolean
-          show_cover?: boolean
           show_services?: boolean
-          show_links?: boolean
           show_hours?: boolean
-          show_booking?: boolean
+          show_social_links?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -277,11 +273,9 @@ export type Database = {
           button_style?: string
           font_pairing?: string
           show_logo?: boolean
-          show_cover?: boolean
           show_services?: boolean
-          show_links?: boolean
           show_hours?: boolean
-          show_booking?: boolean
+          show_social_links?: boolean
           created_at?: string
           updated_at?: string
         }

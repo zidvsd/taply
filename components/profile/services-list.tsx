@@ -5,8 +5,11 @@ interface ServicesListProps {
 }
 
 function formatPrice(price: number, currency: string): string {
-  const symbol = currency === "PHP" ? "₱" : `${currency} `
-  return `${symbol}${price.toLocaleString()}`
+  if (currency === "PHP") {
+    return `₱${price.toLocaleString("en-PH")}`
+  }
+
+  return `${currency} ${price.toLocaleString()}`
 }
 
 export function ServicesList({ services }: ServicesListProps) {

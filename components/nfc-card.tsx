@@ -3,6 +3,16 @@
 import { useState } from "react"
 import { Radio } from "lucide-react"
 
+export interface ProfileTheme {
+  template: string
+  primaryColor: string
+  accentColor: string
+  backgroundColor: string
+  textColor: string
+  buttonStyle: string
+  fontPairing: string
+}
+
 export function NfcCard() {
   const [cardTheme, setCardTheme] = useState<"dark" | "light">("dark")
 

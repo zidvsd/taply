@@ -7,6 +7,7 @@ import type {
   BusinessHour,
   BusinessLink,
   BusinessService,
+  BookingSettings,
 } from "@/types/database"
 
 export interface BusinessProfileData {
@@ -15,6 +16,7 @@ export interface BusinessProfileData {
   services: BusinessService[]
   hours: BusinessHour[]
   appearance: BusinessAppearance | null
+  booking: BookingSettings | null
 }
 
 /**
@@ -27,7 +29,7 @@ export interface BusinessProfileData {
 export async function getPublicBusinessProfile(
   slug: string
 ): Promise<BusinessProfileData | null> {
-  const supabase = await createClient();
+  const supabase = await createClient()
 
   const { data: business, error: businessError } = await supabase
     .from("businesses")
@@ -40,31 +42,42 @@ export async function getPublicBusinessProfile(
     return null
   }
 
-  const [linksResult, servicesResult, hoursResult, appearanceResult] =
-    await Promise.all([
-      supabase
-        .from("business_links")
-        .select("*")
-        .eq("business_id", business.id)
-        .eq("enabled", true)
-        .order("display_order", { ascending: true }),
-      supabase
-        .from("business_services")
-        .select("*")
-        .eq("business_id", business.id)
-        .eq("enabled", true)
-        .order("display_order", { ascending: true }),
-      supabase
-        .from("business_hours")
-        .select("*")
-        .eq("business_id", business.id)
-        .order("day_of_week", { ascending: true }),
-      supabase
-        .from("business_appearance")
-        .select("*")
-        .eq("business_id", business.id)
-        .maybeSingle(),
-    ])
+  const [
+    linksResult,
+    servicesResult,
+    hoursResult,
+    appearanceResult,
+    bookingResult,
+  ] = await Promise.all([
+    supabase
+      .from("business_links")
+      .select("*")
+      .eq("business_id", business.id)
+      .eq("enabled", true)
+      .order("display_order", { ascending: true }),
+    supabase
+      .from("business_services")
+      .select("*")
+      .eq("business_id", business.id)
+      .eq("enabled", true)
+      .order("display_order", { ascending: true }),
+    supabase
+      .from("business_hours")
+      .select("*")
+      .eq("business_id", business.id)
+      .order("day_of_week", { ascending: true }),
+    supabase
+      .from("business_appearance")
+      .select("*")
+      .eq("business_id", business.id)
+      .maybeSingle(),
+    supabase
+      .from("booking_settings")
+      .select("*")
+      .eq("business_id", business.id)
+      .eq("enabled", true)
+      .maybeSingle(),
+  ])
 
   return {
     business,
@@ -72,5 +85,6 @@ export async function getPublicBusinessProfile(
     services: servicesResult.data ?? [],
     hours: hoursResult.data ?? [],
     appearance: appearanceResult.data ?? null,
+    booking: bookingResult.data ?? null,
   }
 }
