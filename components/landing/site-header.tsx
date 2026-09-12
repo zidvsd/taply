@@ -1,5 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
+import icon from "@/public/icon.svg"
 import type { NavLink } from "./types"
 
 const NAV_LINKS: NavLink[] = [
@@ -15,12 +16,13 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-6">
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src="/taply-logo.svg"
+            src="/icon.svg"
             alt="Taply"
             width={28}
             height={28}
-            className="h-7 w-auto"
+            className="h-7 w-7"
           />
+
           <span className="text-sm font-semibold tracking-tight text-foreground">
             Taply
           </span>
@@ -45,6 +47,7 @@ export function SiteHeader() {
           >
             Sign in
           </Link>
+
           <Link
             href="/signup"
             className="inline-flex h-9 items-center justify-center rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground"

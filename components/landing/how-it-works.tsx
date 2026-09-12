@@ -15,7 +15,7 @@ export function HowItWorks() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-6">
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src="/taply-logo.svg"
+            src="/icon.svg"
             alt="Taply"
             width={28}
             height={28}

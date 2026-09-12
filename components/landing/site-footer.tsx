@@ -1,5 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
+import icon from "@/public/icon.svg"
 import type { NavLink } from "./types"
 
 interface FooterColumn {
@@ -39,17 +40,18 @@ export function SiteFooter() {
         <div className="grid grid-cols-2 gap-8 border-b border-border pb-12 md:grid-cols-4">
           <div className="col-span-2 flex flex-col gap-3 md:col-span-1">
             <div className="flex items-center gap-2">
-              <Image
-                src="/taply-logo.svg"
-                alt="Taply"
-                width={24}
-                height={24}
-                className="h-6 w-auto opacity-80"
-              />
+               <Image
+                         src={icon}
+                         alt="Taply"
+                         width={28}
+                         height={28}
+                         className="h-7 w-auto"
+                       />
               <span className="text-sm font-semibold text-foreground">
                 Taply
               </span>
             </div>
+
             <p className="text-sm leading-relaxed text-muted-foreground">
               Your business, one tap away.
             </p>
@@ -60,6 +62,7 @@ export function SiteFooter() {
               <span className="text-sm font-medium text-foreground">
                 {column.heading}
               </span>
+
               {column.links.map((link) => (
                 <Link
                   key={link.href}
