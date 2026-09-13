@@ -1,33 +1,61 @@
 import {
-  MessageCircle,
-  Star,
-  MapPin,
-  Globe,
   Calendar,
-  Mail,
-  Phone,
+  Globe,
   Link as LinkIcon,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Phone,
+  Star,
 } from "lucide-react"
 
 import type { BusinessLink } from "@/types/database"
 
-import { SiInstagram, SiFacebook, SiYoutube, SiTiktok } from "react-icons/si"
+import {
+  FaFacebook,
+  FaInstagram,
+  FaPinterest,
+  FaReddit,
+  FaSnapchat,
+  FaTelegram,
+  FaThreads,
+  FaXTwitter,
+  FaLinkedin,
+  FaTiktok,
+  FaTwitch,
+  FaWhatsapp,
+  FaYoutube,
+} from "react-icons/fa6"
 
 import type { IconType } from "react-icons"
 
 type PlatformIcon = IconType | typeof LinkIcon
 
 const PLATFORM_ICON: Record<string, PlatformIcon> = {
-  // Brand icons
-  facebook: SiFacebook,
-  instagram: SiInstagram,
-  tiktok: SiTiktok,
-  youtube: SiYoutube,
+  // Social media
+  facebook: FaFacebook,
+  instagram: FaInstagram,
+  tiktok: FaTiktok,
+  youtube: FaYoutube,
+  linkedin: FaLinkedin,
+  x: FaXTwitter,
+  twitter: FaXTwitter,
+  threads: FaThreads,
+  pinterest: FaPinterest,
+  snapchat: FaSnapchat,
+  reddit: FaReddit,
+  twitch: FaTwitch,
 
-  // Lucide icons
+  // Messaging
+  whatsapp: FaWhatsapp,
+  telegram: FaTelegram,
   messenger: MessageCircle,
+
+  // Google / business
   google_reviews: Star,
   google_maps: MapPin,
+
+  // Business
   website: Globe,
   booking: Calendar,
   email: Mail,

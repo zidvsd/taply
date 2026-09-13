@@ -7,9 +7,29 @@ import {
   Star,
   UserRound,
 } from "lucide-react"
+import {
+  FaFacebook,
+  FaInstagram,
+  FaLinkedin,
+  FaTiktok,
+  FaYoutube,
+  FaWhatsapp,
+  FaTelegram,
+  FaPinterest,
+  FaGoogle,
+} from "react-icons/fa"
+
+import { FaXTwitter } from "react-icons/fa6"
 
 import { Iphone } from "@/components/ui/iphone"
+import type { IconType } from "react-icons"
+import type { LucideIcon } from "lucide-react"
 
+type ProfileLink = {
+  label: string
+  href: string
+  icon: IconType | LucideIcon
+}
 interface ContactDetail {
   label: string
   value: string
@@ -38,49 +58,66 @@ const CONTACT_DETAILS: ContactDetail[] = [
   },
 ]
 
-interface ProfileLink {
-  label: string
-  value: string
-  icon: typeof Star
-  href: string
-}
-
 const PROFILE_LINKS: ProfileLink[] = [
   {
     label: "Google Reviews",
-    value: "Reviews",
-    icon: Star,
-    href: "https://www.google.com/search?q=Julian+Vance+Industrial+Designer",
-  },
-  {
-    label: "LinkedIn",
-    value: "LinkedIn",
-    icon: Globe,
-    href: "https://www.linkedin.com/in/julian-vance",
+    href: "#",
+    icon: FaGoogle,
   },
   {
     label: "Facebook",
-    value: "Facebook",
-    icon: Globe,
-    href: "https://www.facebook.com/julianvance",
+    href: "#",
+    icon: FaFacebook,
   },
   {
     label: "Instagram",
-    value: "@julianvance",
-    icon: Globe,
-    href: "https://www.instagram.com/julianvance",
+    href: "#",
+    icon: FaInstagram,
   },
   {
     label: "TikTok",
-    value: "@julianvance",
+    href: "#",
+    icon: FaTiktok,
+  },
+  {
+    label: "LinkedIn",
+    href: "#",
+    icon: FaLinkedin,
+  },
+  {
+    label: "YouTube",
+    href: "#",
+    icon: FaYoutube,
+  },
+  {
+    label: "X",
+    href: "#",
+    icon: FaXTwitter,
+  },
+  {
+    label: "WhatsApp",
+    href: "#",
+    icon: FaWhatsapp,
+  },
+  {
+    label: "Telegram",
+    href: "#",
+    icon: FaTelegram,
+  },
+  {
+    label: "Pinterest",
+    href: "#",
+    icon: FaPinterest,
+  },
+  {
+    label: "Website",
+    href: "#",
     icon: Globe,
-    href: "https://www.tiktok.com/@julianvance",
   },
   {
     label: "Book a meeting",
-    value: "TidyCal",
+    href: "#",
     icon: CalendarDays,
-    href: "https://tidycal.com/julianvance",
   },
 ]
 
@@ -223,7 +260,7 @@ export function ContactCard() {
                         </div>
 
                         <span className="font-mono text-[13px] text-muted-foreground">
-                          {link.value}
+                          {link.href}
                         </span>
                       </a>
                     )
