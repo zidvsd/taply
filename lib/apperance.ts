@@ -27,6 +27,47 @@ const BUTTON_RADIUS: Record<string, string> = {
 }
 
 /**
+ * Shared CSS-variable map, used by both buildAppearanceStyle (inline
+ * style on <main>) and appearanceRootStyleTag (a <style> tag at
+ * document root). Both need the exact same key/value pairs — this is
+ * the one place that decides what those are.
+ */
+function appearanceCssVariables(
+  appearance: BusinessAppearance | null
+): Record<string, string> {
+  if (!appearance) return {}
+
+  const vars: Record<string, string> = {}
+
+  if (appearance.background_color) {
+    vars["--background"] = appearance.background_color
+  }
+  if (appearance.text_color) {
+    vars["--foreground"] = appearance.text_color
+    vars["--card-foreground"] = appearance.text_color
+    vars["--popover-foreground"] = appearance.text_color
+  }
+  if (appearance.primary_color) {
+    vars["--primary"] = appearance.primary_color
+    // Buttons need readable text on top of the custom primary color.
+    // We don't have a per-business "on-primary" field in the schema,
+    // so derive it: light primary -> dark text, dark primary -> light text.
+    vars["--primary-foreground"] = isLightColor(appearance.primary_color)
+      ? "#000000"
+      : "#FFFFFF"
+  }
+  if (appearance.accent_color) {
+    vars["--accent"] = appearance.accent_color
+    vars["--ring"] = appearance.accent_color
+  }
+  if (appearance.button_style && BUTTON_RADIUS[appearance.button_style]) {
+    vars["--radius"] = BUTTON_RADIUS[appearance.button_style]
+  }
+
+  return vars
+}
+
+/**
  * Maps a business_appearance row onto the same CSS custom properties
  * globals.css defines (--background, --foreground, --primary, etc).
  * Every component already reads these via Tailwind's semantic classes
@@ -36,75 +77,35 @@ const BUTTON_RADIUS: Record<string, string> = {
  *
  * Any field that's missing or empty falls back to Taply's default
  * token (undefined = inherit from globals.css).
- *
- * NOTE: this object is used two ways —
- *   1. Inline `style` on <main> (themes everything actually inside it)
- *   2. Serialized into a :root <style> block in the layout (themes
- *      Radix portals — popovers, dropdowns, dialogs — which render on
- *      <body> and are NOT descendants of <main>, so inline style alone
- *      never reaches them). See appearanceRootStyleTag() below.
  */
 export function buildAppearanceStyle(
   appearance: BusinessAppearance | null
 ): CSSProperties {
-  if (!appearance) return {}
-
-  const style: Record<string, string> = {}
-
-  if (appearance.background_color) {
-    style["--background"] = appearance.background_color
-    // Popover/dropdown surfaces and muted section headers (e.g. menu
-    // category dividers) should read as "the same surface" as the
-    // page, not the app's default white/gray.
-    style["--popover"] = appearance.background_color
-    style["--muted"] = mutedTint(
-      appearance.background_color,
-      appearance.text_color
-    )
-  }
-  if (appearance.text_color) {
-    style["--foreground"] = appearance.text_color
-    style["--card-foreground"] = appearance.text_color
-    style["--popover-foreground"] = appearance.text_color
-    style["--muted-foreground"] = appearance.text_color
-  }
-  if (appearance.primary_color) {
-    style["--primary"] = appearance.primary_color
-    // Buttons need readable text on top of the custom primary color.
-    // We don't have a per-business "on-primary" field in the schema,
-    // so derive it: light primary -> dark text, dark primary -> light text.
-    style["--primary-foreground"] = isLightColor(appearance.primary_color)
-      ? "#000000"
-      : "#FFFFFF"
-  }
-  if (appearance.accent_color) {
-    style["--accent"] = appearance.accent_color
-    style["--ring"] = appearance.accent_color
-  }
-  if (appearance.button_style && BUTTON_RADIUS[appearance.button_style]) {
-    style["--radius"] = BUTTON_RADIUS[appearance.button_style]
-  }
-
-  return style as CSSProperties
+  return appearanceCssVariables(appearance) as CSSProperties
 }
 
 /**
- * Same values as buildAppearanceStyle, serialized as a :root rule.
- * Render this via <style dangerouslySetInnerHTML> once per business
- * page (in the [slug] layout) so CSS variables are available document-
- * wide — including inside Radix portals (Popover/Dialog/DropdownMenu
- * content), which mount on <body> and fall outside <main>'s inline
- * style. Values come from the server (business_appearance row), not
- * user free-text input, so this isn't an XSS injection point — but if
- * that ever changes, sanitize before interpolating.
+ * Radix components (Popover, Dialog, DropdownMenu, etc.) render their
+ * content in a portal appended to <body>, outside the <main> subtree
+ * that buildAppearanceStyle themes. An inline `style` on <main> never
+ * reaches portaled content, so if a themed profile ever uses a Radix
+ * popover/dialog again, that content falls back to Taply's default
+ * theme instead of the business's own colors.
+ *
+ * This returns a <style> tag body that sets the same variables at
+ * :root, making them available document-wide so portaled content
+ * matches. Safe to inject via dangerouslySetInnerHTML: values come
+ * from business_appearance (hex colors, radius keywords), never from
+ * unescaped user free-text.
+ *
+ * Returns null when there's nothing to override, so callers can skip
+ * rendering the tag entirely.
  */
 export function appearanceRootStyleTag(
   appearance: BusinessAppearance | null
 ): string | null {
-  if (!appearance) return null
-
-  const style = buildAppearanceStyle(appearance) as Record<string, string>
-  const entries = Object.entries(style)
+  const vars = appearanceCssVariables(appearance)
+  const entries = Object.entries(vars)
 
   if (entries.length === 0) return null
 
@@ -132,45 +133,4 @@ function isLightColor(hex: string): boolean {
 
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
   return luminance > 0.6
-}
-
-/**
- * Derives a "muted surface" tone from the business's background color —
- * a slightly shifted shade used for section dividers (e.g. menu
- * category headers) so they read as a subtle variation of the page
- * background rather than a hardcoded gray that clashes with custom
- * themes. Shifts toward the text color by a small amount rather than
- * toward a fixed gray, so it works for both light and dark
- * background_color values.
- */
-function mutedTint(backgroundHex: string, textHex: string | null): string {
-  const bg = parseHex(backgroundHex)
-  const fg = parseHex(textHex ?? "#000000")
-
-  if (!bg || !fg) return backgroundHex
-
-  const amount = 0.06 // subtle — just enough to separate from background
-
-  const mix = (a: number, b: number) => Math.round(a + (b - a) * amount)
-
-  const r = mix(bg.r, fg.r)
-  const g = mix(bg.g, fg.g)
-  const b = mix(bg.b, fg.b)
-
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`
-}
-
-function parseHex(hex: string): { r: number; g: number; b: number } | null {
-  const normalized = hex.replace("#", "")
-  if (normalized.length !== 6) return null
-
-  return {
-    r: parseInt(normalized.slice(0, 2), 16),
-    g: parseInt(normalized.slice(2, 4), 16),
-    b: parseInt(normalized.slice(4, 6), 16),
-  }
-}
-
-function toHex(value: number): string {
-  return Math.max(0, Math.min(255, value)).toString(16).padStart(2, "0")
 }

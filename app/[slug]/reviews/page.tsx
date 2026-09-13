@@ -41,9 +41,7 @@ export default async function ReviewsPage({ params }: PageProps) {
         strokeWidth={1.5}
         aria-hidden="true"
       />
-      <p className="text-sm font-medium text-foreground">
-        Reviews coming soon
-      </p>
+      <p className="text-sm font-medium text-foreground">Reviews coming soon</p>
       <p className="max-w-xs text-sm text-muted-foreground">
         This section will show what customers are saying on Google.
       </p>

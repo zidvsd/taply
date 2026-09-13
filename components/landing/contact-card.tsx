@@ -82,12 +82,6 @@ const PROFILE_LINKS: ProfileLink[] = [
     icon: CalendarDays,
     href: "https://tidycal.com/julianvance",
   },
-  {
-    label: "Menu",
-    value: "View menu",
-    icon: Menu,
-    href: "#menu",
-  },
 ]
 
 const CAPABILITIES = [

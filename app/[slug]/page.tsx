@@ -2,10 +2,9 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { getPublicBusinessProfile } from "@/actions/business-profile"
 import { GoogleReviewLink } from "@/components/profile/google-review-link"
-import { ServicesPopover } from "@/components/profile/services-popover"
-import { MenuPopover } from "@/components/profile/menu-popover"
 import { LinksList } from "@/components/profile/links-list"
 import { HoursList } from "@/components/profile/hours-list"
+import { ProfileSetupPendingState } from "@/components/empty-states/profile-setup-pending"
 import { resolveAppearanceForRender } from "@/lib/apperance"
 
 interface PageProps {
@@ -45,26 +44,23 @@ export default async function BusinessProfilePage({ params }: PageProps) {
     notFound()
   }
 
-  const {
-    business,
-    links,
-    services,
-    hours,
-    appearance,
-    menuCategories,
-    menuItems,
-  } = profile
+  const { business, links, hours, appearance } = profile
   const activeAppearance = resolveAppearanceForRender(appearance)
+
+  // Menu and Services now live on their own tabs (/menu, /services),
+  // built conditionally in layout.tsx from real content — they're
+  // intentionally not repeated here to avoid the double-navigation
+  // problem (a business showing "Menu" both as a tab and a popover).
+  const hasContent =
+    links.length > 0 || hours.length > 0 || Boolean(business.google_review_url)
+
+  if (!hasContent) {
+    return <ProfileSetupPendingState />
+  }
 
   return (
     <div className="flex flex-col gap-3">
       <GoogleReviewLink business={business} />
-
-      <MenuPopover categories={menuCategories} items={menuItems} />
-
-      {activeAppearance?.show_services !== false && (
-        <ServicesPopover services={services} />
-      )}
 
       {activeAppearance?.show_social_links !== false && (
         <LinksList links={links} />
