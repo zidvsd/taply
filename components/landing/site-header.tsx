@@ -1,6 +1,10 @@
 import Link from "next/link"
 import Image from "next/image"
+
 import icon from "@/public/icon.svg"
+import { createClient } from "@/utils/supabase/server"
+import { UserAvatarDropdown } from "@/components/user-avatar-dropdown"
+
 import type { NavLink } from "./types"
 
 const NAV_LINKS: NavLink[] = [
@@ -10,13 +14,30 @@ const NAV_LINKS: NavLink[] = [
   { label: "Pricing", href: "#pricing" },
 ]
 
-export function SiteHeader() {
+export async function SiteHeader() {
+  const supabase = await createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  let profile = null
+
+  if (user) {
+    const { data } = await supabase
+      .from("profiles")
+      .select("first_name, avatar_url")
+      .eq("id", user.id)
+      .maybeSingle()
+    profile = data
+  }
+
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-6">
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src="/icon.svg"
+            src={icon}
             alt="Taply"
             width={28}
             height={28}
@@ -41,19 +62,25 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-4">
-          <Link
-            href="/login"
-            className="hidden text-sm text-foreground hover:text-muted-foreground sm:inline"
-          >
-            Sign in
-          </Link>
+          {user ? (
+            <UserAvatarDropdown user={user} profile={profile} />
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="hidden text-sm text-foreground hover:text-muted-foreground sm:inline"
+              >
+                Sign in
+              </Link>
 
-          <Link
-            href="/signup"
-            className="inline-flex h-9 items-center justify-center rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground"
-          >
-            Get Taply
-          </Link>
+              <Link
+                href="/signup"
+                className="inline-flex h-9 items-center justify-center rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground"
+              >
+                Get Taply
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

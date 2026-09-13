@@ -81,23 +81,35 @@ export function SignupForm({
       return
     }
 
-    // If email confirmation is enabled, Supabase returns a user
-    // without an active session until the email is confirmed.
+    // Clear the form after successful signup
+    setFirstName("")
+    setLastName("")
+    setEmail("")
+    setPassword("")
+    setConfirmPassword("")
+
+    // Email confirmation is enabled
     if (data.user && !data.session) {
-      toast.success("Check your email", {
+      toast.success("Account created", {
         description:
-          "We've sent you a confirmation link. Please check your inbox to verify your account.",
+          "Please check your email and verify your account before signing in.",
       })
 
-      setLoading(false)
+      setTimeout(() => {
+        window.location.href = "/login"
+      }, 1000)
+
       return
     }
 
+    // Email confirmation is disabled
     toast.success("Account created", {
       description: "Welcome to Taply!",
     })
 
-    window.location.href = "/dashboard"
+    setTimeout(() => {
+      window.location.href = "/login"
+    }, 1000)
   }
 
   async function handleGoogleSignup() {
