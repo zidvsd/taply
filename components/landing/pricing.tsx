@@ -1,6 +1,26 @@
 import Link from "next/link"
 import { Check } from "lucide-react"
 import type { PricingTier } from "./types"
+
+const STARTER_FEATURES = [
+  "1 NFC card + QR code",
+  "Business info, links, hours",
+  "One contact action",
+  "1 template",
+]
+
+const BUSINESS_ONLY_FEATURES = [
+  "Services and pricing",
+  "Reviews, booking link, socials, menu",
+  "All templates, custom colors",
+]
+
+const PRO_ONLY_FEATURES = [
+  "3 NFC cards: main, review, booking",
+  "Priority support",
+  "Discounted replacement cards",
+]
+
 const TIERS: PricingTier[] = [
   {
     name: "Starter",
@@ -8,12 +28,7 @@ const TIERS: PricingTier[] = [
     currency: "₱",
     description: "One card, one profile, everything you need to get started.",
     cardCount: 1,
-    features: [
-      "1 NFC card + QR code",
-      "Business info, links, hours",
-      "One contact action",
-      "1 template",
-    ],
+    features: STARTER_FEATURES,
   },
   {
     name: "Business",
@@ -22,12 +37,7 @@ const TIERS: PricingTier[] = [
     description: "The full profile: services, reviews, booking, and more.",
     cardCount: 1,
     highlighted: true,
-    features: [
-      "1 premium NFC card + QR code",
-      "Services and pricing",
-      "Reviews, booking link, socials, menu",
-      "All templates, custom colors",
-    ],
+    features: [...STARTER_FEATURES, ...BUSINESS_ONLY_FEATURES],
   },
   {
     name: "Pro",
@@ -36,10 +46,9 @@ const TIERS: PricingTier[] = [
     description: "Multiple cards for multiple customer actions.",
     cardCount: 3,
     features: [
-      "3 NFC cards: main, review, booking",
-      "Everything in Business",
-      "Priority support",
-      "Discounted replacement cards",
+      ...STARTER_FEATURES,
+      ...BUSINESS_ONLY_FEATURES,
+      ...PRO_ONLY_FEATURES,
     ],
   },
 ]
@@ -47,7 +56,7 @@ const TIERS: PricingTier[] = [
 export function Pricing() {
   return (
     <section id="pricing" className="bg-background px-6 py-24 md:py-32">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-6xl">
         <h2 className="max-w-xl text-3xl font-bold tracking-tight text-foreground md:text-4xl">
           One price. No subscription.
         </h2>
@@ -55,26 +64,26 @@ export function Pricing() {
           Pay once for your profile and card. No monthly fees.
         </p>
 
-        <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="mt-16 grid grid-cols-1 items-start justify-start gap-6 align-top md:grid-cols-3">
           {TIERS.map((tier) => (
             <div
               key={tier.name}
               className={
                 tier.highlighted
-                  ? "flex flex-col rounded-lg bg-foreground p-8 text-background"
+                  ? "flex flex-col rounded-lg bg-foreground p-8 pb-10 text-background md:pt-10"
                   : "flex flex-col rounded-lg border border-border p-8 text-foreground"
               }
             >
+              {tier.highlighted && (
+                <span className="mb-4 inline-flex w-fit items-center rounded-full border border-background/20 px-3 py-1 text-xs font-medium">
+                  Most popular
+                </span>
+              )}
+
               <h3 className="text-lg font-semibold tracking-tight">
                 {tier.name}
               </h3>
-              <p
-                className={
-                  tier.highlighted
-                    ? "mt-2 text-sm text-muted-foreground"
-                    : "mt-2 text-sm text-muted-foreground"
-                }
-              >
+              <p className="mt-2 text-sm text-muted-foreground">
                 {tier.description}
               </p>
 
@@ -87,7 +96,7 @@ export function Pricing() {
               </div>
 
               <ul className="mt-8 flex flex-col gap-3">
-                {tier.features.map((feature: string) => (
+                {tier.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-2">
                     <Check
                       className="mt-0.5 h-4 w-4 shrink-0"
